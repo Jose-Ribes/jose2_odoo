@@ -44,7 +44,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=odoo
     # Mapeamos el directorio del contenedor "var/lib/postgresql/data" en un directorio "./volumesOdoo/dataPostgreSQL"
     # situado en el lugar donde ejecutemos "Docker compose"
     volumes:
