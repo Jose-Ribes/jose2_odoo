@@ -6,7 +6,7 @@
 PG_CONTAINER="postgres_dev_jose"             # Nombre del contenedor de Postgres
 ODOO_CONTAINER="odoo_dev_jose"               # Nombre del contenedor de Odoo
 PG_USER="odoo"                              # Usuario de la BD Postgres
-DB_NAME="postgres_dev_jose"                              # Nombre de la BD a respaldar 
+DB_NAME="odoo"                              # Nombre de la BD a respaldar 
 BACKUP_DIR="./data/backups"                 # Directorio de backups en el host
 BACKUP_SQL="${BACKUP_DIR}/${DB_NAME}.sql"   # Ruta completa del archivo SQL de backup
 
