@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hola_mundo_v2,hola.mundo.v2,model_hola_mundo_v2,,1,1,1,1

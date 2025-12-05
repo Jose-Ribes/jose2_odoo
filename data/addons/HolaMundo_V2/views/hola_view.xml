@@ -1,0 +1,41 @@
+<!-- HolaMundo_V2/views/hola_view.xml -->
+
+<odoo>
+    <!-- Vista de Lista -->
+    <record id="view_hola_mundo_v2_list" model="ir.ui.view">
+        <field name="name">hola.mundo.v2.list</field>
+        <field name="model">hola.mundo.v2</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="mensaje"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista de Formulario -->
+    <record id="view_hola_mundo_v2_form" model="ir.ui.view">
+        <field name="name">hola.mundo.v2.form</field>
+        <field name="model">hola.mundo.v2</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="mensaje"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción que conecta las vistas con el menú -->
+    <record id="action_hola_mundo_v2" model="ir.actions.act_window">
+        <field name="name">Hola Mundo V2</field>
+        <field name="res_model">hola.mundo.v2</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menús -->
+    <menuitem id="menu_hola_mundo_v2_root" name="Hola Mundo V2"/>
+    <menuitem id="menu_hola_mundo_v2" name="Mensajes" parent="menu_hola_mundo_v2_root"/>
+    <menuitem id="menu_hola_mundo_v2_items" name="Ver Mensajes" parent="menu_hola_mundo_v2" action="action_hola_mundo_v2"/>
+</odoo>
