@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="gestion_restaurante_jose.list">
+      <field name="name">gestion_restaurante_jose list</field>
+      <field name="model">gestion_restaurante_jose.gestion_restaurante_jose</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="nombre"/>
+          <field name="descripcion"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="gestion_restaurante_jose.action_window">
+      <field name="name">gestion_restaurante_jose window</field>
+      <field name="res_model">gestion_restaurante_jose.gestion_restaurante_jose</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="gestion_restaurante_jose.action_server">
+      <field name="name">gestion_restaurante_jose server</field>
+      <field name="model_id" ref="model_gestion_restaurante_jose_gestion_restaurante_jose"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+    <menuitem name="Gestión De Platos" id="gestion_restaurante_jose.menu_root"/>
+    <!-- menu categories -->
+    <menuitem name="Menú" id="gestion_restaurante_jose.platos" parent="gestion_restaurante_jose.menu_root"/>
+<!--
+    <menuitem name="Menu 2" id="gestion_restaurante_jose.menu_2" parent="gestion_restaurante_jose.menu_root"/>
+-->
+    <!-- actions -->
+    <menuitem name="Platos" id="gestion_restaurante_jose.platos_list" parent="gestion_restaurante_jose.platos"
+              action="gestion_restaurante_jose.action_window"/>
+<!--
+    <menuitem name="Server to list" id="gestion_restaurante_jose" parent="gestion_restaurante_jose.menu_2"
+              action="gestion_restaurante_jose.action_server"/>
+-->
+  </data>
+</odoo>
