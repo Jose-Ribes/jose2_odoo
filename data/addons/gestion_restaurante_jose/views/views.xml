@@ -3,7 +3,7 @@
     <!-- explicit list view definition -->
     <record model="ir.ui.view" id="gestion_restaurante_jose.list">
       <field name="name">gestion_restaurante_jose list</field>
-      <field name="model">gestion_restaurante_jose.gestion_restaurante_jose</field>
+      <field name="model">gestion_restaurante_jose.platos_jose</field>
       <field name="arch" type="xml">
         <list>
           <field name="nombre"/>
@@ -14,8 +14,8 @@
 
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="gestion_restaurante_jose.action_window">
-      <field name="name">gestion_restaurante_jose window</field>
-      <field name="res_model">gestion_restaurante_jose.gestion_restaurante_jose</field>
+      <field name="name">Gestión de Platos</field>
+      <field name="res_model">gestion_restaurante_jose.platos_jose</field>
       <field name="view_mode">list,form</field>
     </record>
 
@@ -36,7 +36,7 @@
 -->
 
     <!-- Top menu item -->
-    <menuitem name="Gestión De Platos" id="gestion_restaurante_jose.menu_root"/>
+    <menuitem name="Gestión Restaurante" id="gestion_restaurante_jose.menu_root"/>
     <!-- menu categories -->
     <menuitem name="Menú" id="gestion_restaurante_jose.platos" parent="gestion_restaurante_jose.menu_root"/>
 <!--

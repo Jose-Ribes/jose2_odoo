@@ -1,21 +1,52 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
+    <!-- Vista de lista -->
     <record model="ir.ui.view" id="gestion_tareas_jose.list">
       <field name="name">gestion_tareas_jose list</field>
-      <field name="model">gestion_tareas_jose.gestion_tareas_jose</field>
+      <field name="model">gestion_tareas_jose.tareas_jose</field>
       <field name="arch" type="xml">
         <list>
-          <field name="nombre"/>
+          <field name="name"/>
           <field name="descripcion"/>
+          <field name="finalizado"/>
         </list>
       </field>
     </record>
 
+    <!-- Vista de formulario -->
+    <record model="ir.ui.view" id="gestion_tareas_jose.form">
+      <field name="name">gestion_tareas_jose form</field>
+      <field name="model">gestion_tareas_jose.tareas_jose</field>
+      <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="descripcion"/>
+                    <field name="finalizado"/>
+                </group>
+                <group>
+                    <field name="fecha_creacion"/>
+                    <field name="fecha_ini"/>
+                    <field name="fecha_fin"/>
+                    <field name="sprint"/>
+                    <field name="rel_tecnologias" widget="many2many_tags"/>
+                </group>
+            </sheet>
+        </form>
+      </field>
+    </record>
+
     <!-- actions opening views on models -->
-    <record model="ir.actions.act_window" id="gestion_tareas_jose.action_window">
+    <record model="ir.actions.act_window" id="gestion_tareas_jose.action_tareas_window">
       <field name="name">gestion_tareas_jose window</field>
-      <field name="res_model">gestion_tareas_jose.gestion_tareas_jose</field>
+      <field name="res_model">gestion_tareas_jose.tareas_jose</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="gestion_tareas_jose.action_sprints_window">
+      <field name="name">gestion_sprints_jose window</field>
+      <field name="res_model">gestion_tareas_jose.sprints_jose</field>
       <field name="view_mode">list,form</field>
     </record>
 
@@ -36,15 +67,18 @@
 -->
 
     <!-- Top menu item -->
-    <menuitem name="gestion_tareas_jose" id="gestion_tareas_jose.menu_root"/>
+    <menuitem name="Gestor Tareas" id="gestion_tareas_jose.menu_root"/>
     <!-- menu categories -->
     <menuitem name="Tareas" id="gestion_tareas_jose.tareas" parent="gestion_tareas_jose.menu_root"/>
+    <menuitem name="Sprints" id="gestion_tareas_jose.sprints" parent="gestion_tareas_jose.menu_root"/>
 <!--
     <menuitem name="Menu 2" id="gestion_tareas_jose.menu_2" parent="gestion_tareas_jose.menu_root"/>
 -->
     <!-- actions -->
     <menuitem name="List" id="gestion_tareas_jose.tareas_list" parent="gestion_tareas_jose.tareas"
-              action="gestion_tareas_jose.action_window"/>
+              action="gestion_tareas_jose.action_tareas_window"/>
+    <menuitem name="Listado Sprints" id="gestion_tareas_jose.sprints_list" parent="gestion_tareas_jose.sprints"
+              action="gestion_tareas_jose.action_sprints_window"/>
 <!--
     <menuitem name="Server to list" id="gestion_tareas_jose" parent="gestion_tareas_jose.menu_2"
               action="gestion_tareas_jose.action_server"/>
