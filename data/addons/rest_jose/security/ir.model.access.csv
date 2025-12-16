@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_rest_jose_rest_jose,rest_jose.rest_jose,model_rest_jose_rest_jose,base.group_user,1,1,1,1
+access_rest_jose_platos_jose,rest_jose.platos_jose,model_rest_jose_platos_jose,base.group_user,1,1,1,1
+access_rest_jose_menu_jose,rest_jose.menu_jose,model_rest_jose_menu_jose,base.group_user,1,1,1,1
+access_rest_jose_ingrediente_jose,rest_jose.ingrediente_jose,model_rest_jose_ingrediente_jose,base.group_user,1,1,1,1

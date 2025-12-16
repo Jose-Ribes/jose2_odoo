@@ -1,0 +1,84 @@
+<odoo>
+  <data>
+    <!-- vista de lista (platos) -->
+    <record model="ir.ui.view" id="rest_jose.list">
+      <field name="name">rest_jose list</field>
+      <field name="model">rest_jose.platos_jose</field>
+      <field name="arch" type="xml">
+        <form>
+            <field name="name"/>
+            <field name="categoria"/>
+            <field name="precio"/>
+            <field name="disponible"/>
+        </form>
+      </field>
+    </record>
+
+    <!-- vista de formulario -->
+    <record model="ir.ui.view" id="rest_jose.form">
+      <field name="name">rest_jose form</field>
+      <field name="model">rest_jose.platos_jose</field>
+      <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="categoria"/>
+                    <field name="precio"/>
+                    <field name="disponible"/>
+                    <field name="rel_ingredientes" widget="many2many_tags"/>
+                </group>
+            </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="rest_jose.action_platos_window">
+      <field name="name">Gestión de Platos</field>
+      <field name="res_model">rest_jose.platos_jose</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rest_jose.action_menus_window">
+      <field name="name">Gestión de Menús</field>
+      <field name="res_model">rest_jose.menu_jose</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rest_jose.action_ingredientes_window">
+      <field name="name">Gestión de Ingredientes</field>
+      <field name="res_model">rest_jose.ingrediente_jose</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="rest_jose.action_server">
+      <field name="name">rest_jose server</field>
+      <field name="model_id" ref="model_rest_jose_rest_jose"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+    <menuitem name="Gestión Restaurante" id="rest_jose.menu_root"/>
+    <!-- menu categories -->
+    <menuitem name="Menu" id="rest_jose.menu" parent="rest_jose.menu_root"/>
+    <!-- <menuitem name="Menu 2" id="rest_jose.menu_2" parent="rest_jose.menu_root"/> -->
+    <!-- actions -->
+    <menuitem name="Platos" id="rest_jose.menu_platos" parent="rest_jose.menu"
+          action="rest_jose.action_platos_window"/>
+    <menuitem name="Menús" id="rest_jose.menu_menus" parent="rest_jose.menu"
+          action="rest_jose.action_menus_window"/>
+    <menuitem name="Ingredientes" id="rest_jose.menu_ingredientes" parent="rest_jose.menu"
+          action="rest_jose.action_ingredientes_window"/>
+  </data>
+</odoo>
