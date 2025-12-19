@@ -6,6 +6,7 @@
       <field name="model">gestion_tareas_jose.tareas_jose</field>
       <field name="arch" type="xml">
         <list>
+          <field name="codigo"/>
           <field name="name"/>
           <field name="descripcion"/>
           <field name="finalizado"/>
@@ -21,6 +22,7 @@
         <form>
             <sheet>
                 <group>
+                    <field name="codigo"/>
                     <field name="name"/>
                     <field name="descripcion"/>
                     <field name="finalizado"/>
