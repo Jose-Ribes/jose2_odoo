@@ -77,11 +77,13 @@ class platos_jose(models.Model):
         help="Categoría del Plato"
     )
     
-    menu = fields.Many2one (
-        'rest_jose.menu_jose',
-        string='Menu relacionado con los platos',
-        ondelete = 'set null',
-        help='Menu al que pertenecen el plato o los platos'
+    menus = fields.Many2many(
+        comodel_name='rest_jose.menu_jose',
+        relation='rel_plato_menu',
+        column1='plato_id',
+        column2='menu_id',
+        string='Menús',
+        help='Menús en los que aparece este plato'
     )
 
 
@@ -114,8 +116,9 @@ class platos_jose(models.Model):
     @api.depends('precio', 'descuento')
     def _compute_precio_final(self):
         for plato in self:
-            descuento_aplicado = plato.precio * (plato.descuento / 100)
-            plato.precio_final = plato.precio - descuento_aplicado
+            precio_base = plato.precio or 0.0
+            descuento_decimal = (plato.descuento or 0.0) / 100.0
+            plato.precio_final = precio_base * (1 - descuento_decimal)
     
 class menu_jose(models.Model):
     _name = 'rest_jose.menu_jose'
@@ -151,9 +154,11 @@ class menu_jose(models.Model):
         help="Comprobación de actividad del Menu"
     )
 
-    platos = fields.One2many(
-        'rest_jose.platos_jose',
-        'menu',
+    platos = fields.Many2many(
+        comodel_name='rest_jose.platos_jose',
+        relation='rel_plato_menu',
+        column1='menu_id',
+        column2='plato_id',
         string='Platos del Menu')
     
     precio_total = fields.Float(

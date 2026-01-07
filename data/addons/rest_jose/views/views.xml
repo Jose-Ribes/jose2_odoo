@@ -5,16 +5,19 @@
       <field name="name">rest_jose list</field>
       <field name="model">rest_jose.platos_jose</field>
       <field name="arch" type="xml">
-        <form>
+        <list>
             <field name="name"/>
             <field name="categoria"/>
             <field name="precio"/>
             <field name="disponible"/>
-        </form>
+            <field name="codigo_plato"/>
+            <field name="precio_con_iva"/>
+            <field name="precio_final"/>
+        </list>
       </field>
     </record>
 
-    <!-- vista de formulario -->
+    <!-- vista de formulario (platos) -->
     <record model="ir.ui.view" id="rest_jose.form">
       <field name="name">rest_jose form</field>
       <field name="model">rest_jose.platos_jose</field>
@@ -25,6 +28,8 @@
                     <field name="name"/>
                     <field name="categoria"/>
                     <field name="precio"/>
+                    <field name="descuento"/>
+                    <field name="menus" widget="many2many_tags"/>
                     <field name="disponible"/>
                     <field name="rel_ingredientes" widget="many2many_tags"/>
                 </group>
@@ -32,6 +37,48 @@
         </form>
       </field>
     </record>
+
+      <!-- vista de lista (menús) -->
+      <record model="ir.ui.view" id="rest_jose.menu_list">
+        <field name="name">rest_jose menu list</field>
+        <field name="model">rest_jose.menu_jose</field>
+        <field name="arch" type="xml">
+          <list>
+          <field name="name"/>
+          <field name="fecha_inicio"/>
+          <field name="fecha_fin"/>
+          <field name="activo"/>
+          <field name="precio_total" readonly="1"/>
+          </list>
+        </field>
+      </record>
+
+      <!-- vista de formulario (menús) -->
+      <record model="ir.ui.view" id="rest_jose.menu_form">
+        <field name="name">rest_jose menu form</field>
+        <field name="model">rest_jose.menu_jose</field>
+        <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                  <group string="Información del menú">
+                    <field name="name"/>
+                    <field name="descripcion"/>
+                    <field name="fecha_inicio"/>
+                    <field name="fecha_fin"/>
+                    <field name="activo"/>
+                  </group>
+                  <group string="Importe">
+                    <field name="precio_total" readonly="1"/>
+                  </group>
+                </group>
+                <group string="Platos del menú">
+                  <field name="platos" widget="many2many_tags"/>
+                </group>
+            </sheet>
+        </form>
+        </field>
+      </record>
 
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="rest_jose.action_platos_window">
