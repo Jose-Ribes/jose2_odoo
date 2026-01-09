@@ -58,7 +58,16 @@ class tareas_jose(models.Model):
     
     #MÉTODOS --------------------------------------------
     #----------------------------------------------------
-    @api.depends('sprint')
+    def _get_codigo(self):
+        for tarea in self:
+            # Si la tarea no tiene un sprint asignado
+                if not tarea.sprint:
+                    tarea.codigo = "TSK_" + str(tarea.id)
+                else:
+                    # Si tiene sprint, usamos su nombre
+                    tarea.codigo = str(tarea.sprint.nombre).upper() + "_" + str(tarea.id)
+
+    @api.depends('sprint', 'sprint.nombre')
     def _get_codigo(self):
         _logger.info("Iniciando generación de códigos de tareas")
 
@@ -74,7 +83,7 @@ class tareas_jose(models.Model):
                 continue
 
             try:
-                tarea.codigo = f"{tarea.sprint.name}".upper() + "_" + str(tarea.id)
+                tarea.codigo = f"{tarea.sprint.nombre}".upper() + "_" + str(tarea.id)
                 _logger.debug(f"Código generado: {tarea.codigo}")
             except Exception as e:
                 _logger.error(f"Error generando código para tarea {tarea.id}: {str(e)}")
