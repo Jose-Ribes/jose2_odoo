@@ -1,4 +1,8 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError, UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class rest_jose(models.Model):
@@ -119,6 +123,11 @@ class platos_jose(models.Model):
             precio_base = plato.precio or 0.0
             descuento_decimal = (plato.descuento or 0.0) / 100.0
             plato.precio_final = precio_base * (1 - descuento_decimal)
+
+    #@api.constrains('precio')
+    #def _verificar_precio(self):
+        #for plato in self:
+            #if plato.precio <0:
     
 class menu_jose(models.Model):
     _name = 'rest_jose.menu_jose'

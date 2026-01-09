@@ -1,7 +1,12 @@
 from datetime import timedelta
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError, UserError
+import logging
 
+_logger = logging.getLogger(__name__)
 
+#TAREAS_JOSE ******************************************
+#******************************************************
 class tareas_jose(models.Model):
     _name = 'gestion_tareas_jose.tareas_jose'
     _description = 'gestion_tareas_jose.tareas_jose'
@@ -41,7 +46,8 @@ class tareas_jose(models.Model):
     
     # En el modelo tareas_sergio
     codigo = fields.Char(
-        compute="_get_codigo")
+        compute="_get_codigo",
+        store=True)
 
     rel_tecnologias = fields.Many2many(
         comodel_name='gestion_tareas_jose.tecnologias_jose',
@@ -50,14 +56,29 @@ class tareas_jose(models.Model):
         column2='rel_tecnologias',
         string='Tecnologías')
     
+    #MÉTODOS --------------------------------------------
+    #----------------------------------------------------
+    @api.depends('sprint')
     def _get_codigo(self):
+        _logger.info("Iniciando generación de códigos de tareas")
+
         for tarea in self:
-            # Si la tarea no tiene un sprint asignado
+            # Si no hay sprint o el registro aún no tiene ID, no generamos código.
             if not tarea.sprint:
-                tarea.codigo = "TSK_" + str(tarea.id)
-            else:
-                # Si tiene sprint, usamos su nombre
-                tarea.codigo = str(tarea.sprint.nombre).upper() + "_" + str(tarea.id)
+                _logger.warning(f"Tarea {tarea.id} sin sprint asignado")
+                tarea.codigo = False
+                continue
+
+            if not tarea.id:
+                tarea.codigo = False
+                continue
+
+            try:
+                tarea.codigo = f"{tarea.sprint.name}".upper() + "_" + str(tarea.id)
+                _logger.debug(f"Código generado: {tarea.codigo}")
+            except Exception as e:
+                _logger.error(f"Error generando código para tarea {tarea.id}: {str(e)}")
+                tarea.codigo = False
 
 class sprints_jose(models.Model):
     _name = 'gestion_tareas_jose.sprints_jose'
@@ -95,11 +116,23 @@ class sprints_jose(models.Model):
     
     @api.depends('fecha_ini', 'duracion')
     def _compute_fecha_fin(self):
+        try:
+            for sprint in self:
+                if sprint.fecha_ini and sprint.duracion and sprint.duracion >  -10:
+                    sprint.fecha_fin = sprint.fecha_ini + timedelta(days=sprint.duracion)
+                else:
+                    sprint.fecha_fin = sprint.fecha_ini
+        except Exception as e:
+            raise ValidationError(f"Error al generar el código: {str(e)}")
+        
+    @api.constrains('fecha_ini', 'fecha_fin')
+    def _check_fechas(self):
         for sprint in self:
-            if sprint.fecha_ini and sprint.duracion and sprint.duracion > 0:
-                sprint.fecha_fin = sprint.fecha_ini + timedelta(days=sprint.duracion)
-            else:
-                sprint.fecha_fin = sprint.fecha_ini
+            if sprint.fecha_fin and sprint.fecha_ini:
+                if sprint.fecha_fin < sprint.fecha_ini:
+                    raise ValidationError(
+                        "La fecha de fin no puede ser anterior a la fecha de inicio."
+                    )
     
 class tecnologias_jose(models.Model):
     _name = 'gestion_tareas_jose.tecnologias_jose'

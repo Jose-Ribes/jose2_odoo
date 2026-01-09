@@ -25,10 +25,13 @@
         <form>
             <sheet>
                 <group>
+                    <field name="codigo_plato"/>
                     <field name="name"/>
                     <field name="categoria"/>
                     <field name="precio"/>
                     <field name="descuento"/>
+                    <field name="precio_con_iva"/>
+                    <field name="precio_final"/>
                     <field name="menus" widget="many2many_tags"/>
                     <field name="disponible"/>
                     <field name="rel_ingredientes" widget="many2many_tags"/>
@@ -48,6 +51,7 @@
           <field name="fecha_inicio"/>
           <field name="fecha_fin"/>
           <field name="activo"/>
+          <field name="platos" widget="many2many_tags"/>
           <field name="precio_total" readonly="1"/>
           </list>
         </field>
@@ -118,7 +122,7 @@
     <!-- Top menu item -->
     <menuitem name="Gestión Restaurante" id="rest_jose.menu_root"/>
     <!-- menu categories -->
-    <menuitem name="Menu" id="rest_jose.menu" parent="rest_jose.menu_root"/>
+    <menuitem name="Menu" id="rest_jose.menu" parent="rest_jose.menu_root" action="rest_jose.action_menus_window"/>
     <!-- <menuitem name="Menu 2" id="rest_jose.menu_2" parent="rest_jose.menu_root"/> -->
     <!-- actions -->
     <menuitem name="Platos" id="rest_jose.menu_platos" parent="rest_jose.menu"
