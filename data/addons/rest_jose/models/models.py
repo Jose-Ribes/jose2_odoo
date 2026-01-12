@@ -8,6 +8,9 @@ _logger = logging.getLogger(__name__)
 class rest_jose(models.Model):
     _name = 'rest_jose.rest_jose'
     _description = 'rest_jose.rest_jose'
+
+    # CAMPOS ---------------------------------------------------------
+    # ---------------------------------------------------------------
     
     value2 = fields.Float(compute="_value_pc", store=True)
 
@@ -20,6 +23,9 @@ class platos_jose(models.Model):
     _name = 'rest_jose.platos_jose'
     _description = 'Modelo de Platos para Gestión de Restaurante'
 
+    # CAMPOS ---------------------------------------------------------
+    # ---------------------------------------------------------------
+    
     name = fields.Char(
         string="Nombre", 
         required=False, 
@@ -41,6 +47,9 @@ class platos_jose(models.Model):
         string="Descuento (%)",
         default=0.0,
         help="Porcentaje de descuento aplicado al plato")
+    
+    # CAMPOS COMPUTADOS **********************************************
+    # *****************************************************************
     
     codigo_plato = fields.Char(
         string="Código",
@@ -81,6 +90,9 @@ class platos_jose(models.Model):
         help="Categoría del Plato"
     )
     
+    # RELACIONES ****************************************************
+    # *************************************************************** 
+    
     menus = fields.Many2many(
         comodel_name='rest_jose.menu_jose',
         relation='rel_plato_menu',
@@ -98,17 +110,28 @@ class platos_jose(models.Model):
         column2='rel_ingredientes',
         string='Ingredientes')
     
+    # ***************************************************************
+    # MÉTODOS @api.depends (COMPUTADOS) ******************************
+    
     @api.depends('categoria')
     def _get_codigo(self):
         for plato in self:
-            if plato.id:
-                if not plato.categoria:
-                    plato.codigo_plato = f"PLT_{plato.id}"
+            try:
+                if plato.id:
+                    if not plato.categoria:
+                        _logger.warning(f"El plato {plato.id} no tiene categoría asignada.")
+                        plato.codigo_plato = f"PLT_{plato.id}"
+                        _logger.debug(f"Código generado para plato sin categoría: {plato.codigo_plato}")
+                    else:
+                        prefix = plato.categoria[:3].upper()
+                        plato.codigo_plato = f"{prefix}_{plato.id}"
+                        _logger.debug(f"Código generado para plato {plato.id}: {plato.codigo_plato}")
                 else:
-                    prefix = plato.categoria[:3].upper()
-                    plato.codigo_plato = f"{prefix}_{plato.id}"
-            else:
-                plato.codigo_plato = "PLT_"
+                    plato.codigo_plato = "PLT_"
+                    _logger.debug("Código temporal generado para plato sin ID")
+            except Exception as e:
+                _logger.error(f"Error al generar el código del plato: {str(e)}")
+                raise ValidationError(f"Error al generar el código del plato: {str(e)}")
     
     def _compute_precio_con_iva(self):
         for plato in self:
@@ -124,15 +147,35 @@ class platos_jose(models.Model):
             descuento_decimal = (plato.descuento or 0.0) / 100.0
             plato.precio_final = precio_base * (1 - descuento_decimal)
 
-    #@api.constrains('precio')
-    #def _verificar_precio(self):
-        #for plato in self:
-            #if plato.precio <0:
+    # MÉTODOS @api.constrains (VALIDACIONES) **************************
+    # ***************************************************************
+    
+    @api.constrains('precio')
+    def _verificar_precio(self):
+        for plato in self:
+            if plato.precio < 0:
+                _logger.error(f"Precio inválido para plato {plato.id}: {plato.precio} (menor que 0)")
+                raise ValidationError(f"El precio {plato.precio} no puede ser menor que 0")
+            else:
+                _logger.info(f"Precio validado correctamente para plato {plato.id}: {plato.precio}")
+
+    @api.constrains('tiempo_preparacion')
+    def _verificar_tiempoPreparacio(self):
+        for plato in self:
+            if plato.tiempo_preparacion:
+                if plato.tiempo_preparacion < 1 or plato.tiempo_preparacion > 240:
+                    _logger.error(f"Tiempo de preparación inválido para plato {plato.id}: {plato.tiempo_preparacion} minutos")
+                    raise ValidationError(f"El tiempo de preparación debe estar entre un rango de 1 y 240 minutos.")
+                else:
+                    _logger.info(f"Tiempo de preparación validado para plato {plato.id}: {plato.tiempo_preparacion} minutos")
     
 class menu_jose(models.Model):
     _name = 'rest_jose.menu_jose'
     _description = 'Modelo de Platos para Gestión de Restaurante'
 
+    # CAMPOS ---------------------------------------------------------
+    # ---------------------------------------------------------------
+    
     name = fields.Char(
         string="Nombre", 
         required=True, 
@@ -163,6 +206,9 @@ class menu_jose(models.Model):
         help="Comprobación de actividad del Menu"
     )
 
+    # RELACIONES ****************************************************
+    # ***************************************************************
+    
     platos = fields.Many2many(
         comodel_name='rest_jose.platos_jose',
         relation='rel_plato_menu',
@@ -170,21 +216,48 @@ class menu_jose(models.Model):
         column2='plato_id',
         string='Platos del Menu')
     
+    # CAMPOS COMPUTADOS **********************************************
+    # *****************************************************************
+    
     precio_total = fields.Float(
         string="Precio Total del Menú",
         compute="_compute_precio_total",
         store=True,
         help="Suma total de los precios finales de todos los platos")
     
+    # ***************************************************************
+    # MÉTODOS @api.depends (COMPUTADOS) ******************************
+    
     @api.depends('platos', 'platos.precio_final')
     def _compute_precio_total(self):
         for menu in self:
             menu.precio_total = sum(menu.platos.mapped('precio_final'))
+
+    # MÉTODOS @api.constrains (VALIDACIONES) **************************
+    # ***************************************************************
+    
+    @api.constrains('fecha_fin', 'fecha_inicio')
+    def _comparar_fechas(self):
+        for menu in self:
+            if menu.fecha_fin:
+                if menu.fecha_fin < menu.fecha_inicio:
+                    raise ValidationError(f"La fecha fin debe ser posterior a la fecha de inicio.")
+                
+    @api.constrains('platos', 'activo')
+    def _verificar_menus(self):
+        for menu in self:
+            if menu.activo:
+                if len(menu.platos) < 1:
+                    #_logger.warning(f"Intento de activar menú {menu.id} sin platos")
+                    raise ValidationError(f"El menú {menu.name} está activo sin platos.")
     
 class ingrediente_jose(models.Model):
     _name = 'rest_jose.ingrediente_jose'
     _description = 'Modelo de Ingredientes para Gestión de Restaurante'
 
+    # CAMPOS ---------------------------------------------------------
+    # ---------------------------------------------------------------
+    
     name = fields.Char(
         string="Nombre", 
         required=False, 
@@ -203,6 +276,9 @@ class ingrediente_jose(models.Model):
         help="Descipción del Ingrediente"
     )
 
+    # RELACIONES ****************************************************
+    # ***************************************************************
+    
     rel_platos = fields.Many2many (
         comodel_name='rest_jose.platos_jose',
         relation='relacion_platos_ingredientes',
