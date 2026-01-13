@@ -26,6 +26,7 @@
                     <field name="name"/>
                     <field name="descripcion"/>
                     <field name="finalizado"/>
+                    <field name="historia"/>
                 </group>
                 <group>
                     <field name="fecha_creacion"/>
@@ -52,6 +53,18 @@
       <field name="view_mode">list,form</field>
     </record>
 
+    <record model="ir.actions.act_window" id="gestion_tareas_jose.action_proyectos_window">
+      <field name="name">gestion_proyectos_jose window</field>
+      <field name="res_model">gestion_tareas_jose.proyectos_jose</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="gestion_tareas_jose.action_historias_window">
+      <field name="name">gestion_historias_jose window</field>
+      <field name="res_model">gestion_tareas_jose.historias_jose</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
     <!-- server action to the one above -->
 <!--
     <record model="ir.actions.server" id="gestion_tareas_jose.action_server">
@@ -71,8 +84,10 @@
     <!-- Top menu item -->
     <menuitem name="Gestor Tareas" id="gestion_tareas_jose.menu_root"/>
     <!-- menu categories -->
-    <menuitem name="Tareas" id="gestion_tareas_jose.tareas" parent="gestion_tareas_jose.menu_root"/>
-    <menuitem name="Sprints" id="gestion_tareas_jose.sprints" parent="gestion_tareas_jose.menu_root"/>
+    <menuitem name="Tareas" id="gestion_tareas_jose.tareas" parent="gestion_tareas_jose.menu_root" sequence="30"/>
+    <menuitem name="Sprints" id="gestion_tareas_jose.sprints" parent="gestion_tareas_jose.menu_root" sequence="40"/>
+    <menuitem name="Proyectos" id="gestion_tareas_jose.proyectos" parent="gestion_tareas_jose.menu_root" sequence="10"/>
+    <menuitem name="Historias" id="gestion_tareas_jose.historias" parent="gestion_tareas_jose.menu_root" sequence="20"/>
 <!--
     <menuitem name="Menu 2" id="gestion_tareas_jose.menu_2" parent="gestion_tareas_jose.menu_root"/>
 -->
@@ -81,6 +96,10 @@
               action="gestion_tareas_jose.action_tareas_window"/>
     <menuitem name="Listado Sprints" id="gestion_tareas_jose.sprints_list" parent="gestion_tareas_jose.sprints"
               action="gestion_tareas_jose.action_sprints_window"/>
+    <menuitem name="Listado Proyectos" id="gestion_tareas_jose.proyectos_list" parent="gestion_tareas_jose.proyectos"
+              action="gestion_tareas_jose.action_proyectos_window"/>
+    <menuitem name="Listado Historias" id="gestion_tareas_jose.historias_list" parent="gestion_tareas_jose.historias"
+              action="gestion_tareas_jose.action_historias_window"/>
 <!--
     <menuitem name="Server to list" id="gestion_tareas_jose" parent="gestion_tareas_jose.menu_2"
               action="gestion_tareas_jose.action_server"/>

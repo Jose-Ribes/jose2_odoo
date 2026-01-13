@@ -1,4 +1,5 @@
 from datetime import timedelta
+from datetime import datetime
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError, UserError
 import logging
@@ -40,9 +41,9 @@ class tareas_jose(models.Model):
     
     sprint = fields.Many2one(
         'gestion_tareas_jose.sprints_jose', 
-        string='Sprint relacionado', 
-        ondelete='set null', 
-        help='Sprint al que pertenece esta tarea')
+        string='Sprint Activo', 
+        compute='_compute_sprint', 
+        store=True)  
     
     # En el modelo tareas_sergio
     codigo = fields.Char(
@@ -56,38 +57,56 @@ class tareas_jose(models.Model):
         column2='rel_tecnologias',
         string='Tecnologías')
     
+    historia = fields.Many2one(
+        'gestion_tareas_jose.historias_jose', 
+        string='Historia de usuario', 
+        ondelete='set null', 
+        help='Historias de usuario de la tarea')
+    
     #MÉTODOS --------------------------------------------
     #----------------------------------------------------
-    def _get_codigo(self):
-        for tarea in self:
-            # Si la tarea no tiene un sprint asignado
-                if not tarea.sprint:
-                    tarea.codigo = "TSK_" + str(tarea.id)
-                else:
-                    # Si tiene sprint, usamos su nombre
-                    tarea.codigo = str(tarea.sprint.nombre).upper() + "_" + str(tarea.id)
-
     @api.depends('sprint', 'sprint.nombre')
     def _get_codigo(self):
         _logger.info("Iniciando generación de códigos de tareas")
 
         for tarea in self:
-            # Si no hay sprint o el registro aún no tiene ID, no generamos código.
-            if not tarea.sprint:
-                _logger.warning(f"Tarea {tarea.id} sin sprint asignado")
-                tarea.codigo = False
-                continue
-
-            if not tarea.id:
-                tarea.codigo = False
-                continue
-
             try:
-                tarea.codigo = f"{tarea.sprint.nombre}".upper() + "_" + str(tarea.id)
+                if not tarea.sprint:
+                    _logger.warning(f"Tarea {tarea.id} sin sprint asignado")
+                    tarea.codigo = "TSK_" + str(tarea.id)
+
+                else:
+                    # Si tiene sprint, usamos su nombre
+                    tarea.codigo = str(tarea.sprint.nombre).upper() + "_" + str(tarea.id)
+
                 _logger.debug(f"Código generado: {tarea.codigo}")
+
             except Exception as e:
                 _logger.error(f"Error generando código para tarea {tarea.id}: {str(e)}")
-                tarea.codigo = False
+                raise ValidationError(f"Error al generar el código: {str(e)}")
+            
+    @api.depends('historia', 'historia.proyecto')
+    def _compute_sprint(self):
+        for tarea in self:
+            tarea.sprint = False
+
+            # Verificar que la tarea tiene historia y proyecto
+            if tarea.historia and tarea.historia.proyecto:
+                # Buscar sprints del proyecto
+                sprints = self.env['gestion_tareas_jose.sprints_jose'].search([
+                    ('proyecto.id', '=', tarea.historia.proyecto.id)
+                ])
+
+                # Buscar el sprint activo (fecha_fin > ahora) 
+                # de entre todos los sprints asociados al proyecto
+                # en teoría solo hay un sprint activo, por eso es el que no ha vencido
+                for sprint in sprints:
+                    if (isinstance(sprint.fecha_fin, datetime) and 
+                            sprint.fecha_ini <= datetime.now() and   
+                            sprint.fecha_fin > datetime.now()):
+                        tarea.sprint = sprint.id
+                        break
+            
 
 class sprints_jose(models.Model):
     _name = 'gestion_tareas_jose.sprints_jose'
@@ -122,6 +141,12 @@ class sprints_jose(models.Model):
         'gestion_tareas_jose.tareas_jose', 
         'sprint', 
         string='Tareas del Sprint')
+    
+    proyecto = fields.Many2one(
+        'gestion_tareas_jose.proyectos_jose', 
+        string='Proyecto', 
+        ondelete='set null', 
+        help='Proyecto al que pertenece la historia')
     
     @api.depends('fecha_ini', 'duracion')
     def _compute_fecha_fin(self):
@@ -168,3 +193,45 @@ class tecnologias_jose(models.Model):
         column1='rel_tecnologias',
         column2='rel_tareas',
         string='Tareas')
+
+class proyectos_jose(models.Model):
+    _name = 'gestion_tareas_jose.proyectos_jose'
+    _description = 'Modelo de Proyectos'
+
+    name = fields.Char(
+        string="Nombre", 
+        required=True, 
+        help="Nombre del proyecto")
+    
+    descripcion = fields.Text(
+        string="Descripción", 
+        help="Breve descripción del proyecto")
+    
+    historias = fields.One2many(
+        'gestion_tareas_jose.historias_jose', 
+        'proyecto', 
+        string='Historias de usuario del proyecto')
+    
+class historias_jose(models.Model):
+    _name = 'gestion_tareas_jose.historias_jose'
+    _description = 'Modelo de Historias'
+
+    name = fields.Char(
+        string="Nombre", 
+        required=True, 
+        help="Nombre de la historia")
+    
+    descripcion = fields.Text(
+        string="Descripción", 
+        help="Breve descripción de la historia")
+    
+    proyecto = fields.Many2one(
+        'gestion_tareas_jose.proyectos_jose', 
+        string='Proyecto', 
+        ondelete='set null', 
+        help='Proyecto al que pertenece la historia')
+    
+    tareas = fields.One2many(
+        'gestion_tareas_jose.tareas_jose', 
+        'historia', 
+        string='Tareas de la historia')
