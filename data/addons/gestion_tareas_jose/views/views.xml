@@ -9,6 +9,7 @@
           <field name="codigo"/>
           <field name="name"/>
           <field name="descripcion"/>
+          <field name="proyecto_ids"/>
           <field name="finalizado"/>
         </list>
       </field>
@@ -27,6 +28,7 @@
                     <field name="descripcion"/>
                     <field name="finalizado"/>
                     <field name="historia"/>
+                    <field name="proyecto_ids"/>
                 </group>
                 <group>
                     <field name="fecha_creacion"/>

@@ -78,20 +78,31 @@ class platos_jose(models.Model):
         required=False, 
         help="Disponibilidad del plato")
     
-    categoria = fields.Selection(
-        [
-            ('entrante', 'Entrante'),
-            ('principal', 'Principal'),
-            ('postre', 'Postre'),
-            ('bebida', 'Bebida')
-        ],
-        string="Categoría", 
-        required=False, 
-        help="Categoría del Plato"
+    categoria_id = fields.Many2one(
+        comodel_name='rest_jose.categoria_jose',
+        string='Categoría',
+        help='Categoría a la que pertenece el plato'
     )
-    
+
     # RELACIONES ****************************************************
     # *************************************************************** 
+
+    chef_especializado = fields.Many2one(
+        comodel_name='rest_jose.chef_jose',
+        string='Chef especializado',
+        compute='_compute_chef_especializado',
+        store=True,
+        help='Chef asignado automáticamente según la categoría del plato'
+    )
+
+    especialidad_chef = fields.Many2one(
+        comodel_name='rest_jose.categoria_jose',
+        related='chef_especializado.especialidad_id',
+        string='Especialidad del chef',
+        readonly=True,
+        store=True,
+        help='Categoría en la que se especializa el chef asignado'
+    )
     
     menus = fields.Many2many(
         comodel_name='rest_jose.menu_jose',
@@ -112,18 +123,31 @@ class platos_jose(models.Model):
     
     # ***************************************************************
     # MÉTODOS @api.depends (COMPUTADOS) ******************************
+
+    @api.depends('categoria_id')
+    def _compute_chef_especializado(self):
+        """Asigna el primer chef cuya especialidad coincide con la categoría del plato."""
+        Chef = self.env['rest_jose.chef_jose']
+        for plato in self:
+            if plato.categoria_id:
+                plato.chef_especializado = Chef.search([
+                    ('especialidad_id', '=', plato.categoria_id.id)
+                ], limit=1)
+            else:
+                plato.chef_especializado = False
     
-    @api.depends('categoria')
+    @api.depends('categoria_id')
     def _get_codigo(self):
         for plato in self:
             try:
                 if plato.id:
-                    if not plato.categoria:
+                    if not plato.categoria_id:
                         _logger.warning(f"El plato {plato.id} no tiene categoría asignada.")
                         plato.codigo_plato = f"PLT_{plato.id}"
                         _logger.debug(f"Código generado para plato sin categoría: {plato.codigo_plato}")
                     else:
-                        prefix = plato.categoria[:3].upper()
+                        nombre_categoria = plato.categoria_id.name or "CAT"
+                        prefix = nombre_categoria[:3].upper()
                         plato.codigo_plato = f"{prefix}_{plato.id}"
                         _logger.debug(f"Código generado para plato {plato.id}: {plato.codigo_plato}")
                 else:
@@ -215,6 +239,14 @@ class menu_jose(models.Model):
         column1='menu_id',
         column2='plato_id',
         string='Platos del Menu')
+
+    categorias_platos = fields.Many2many(
+        comodel_name='rest_jose.categoria_jose',
+        string='Categorías de los platos',
+        compute='_compute_categorias_platos',
+        store=True,
+        help='Categorías presentes en los platos de este menú'
+    )
     
     # CAMPOS COMPUTADOS **********************************************
     # *****************************************************************
@@ -224,6 +256,11 @@ class menu_jose(models.Model):
         compute="_compute_precio_total",
         store=True,
         help="Suma total de los precios finales de todos los platos")
+
+    @api.depends('platos', 'platos.categoria_id')
+    def _compute_categorias_platos(self):
+        for menu in self:
+            menu.categorias_platos = menu.platos.mapped('categoria_id')
     
     # ***************************************************************
     # MÉTODOS @api.depends (COMPUTADOS) ******************************
@@ -285,3 +322,62 @@ class ingrediente_jose(models.Model):
         column1='rel_ingredientes',
         column2='rel_platos',
         string='Platos')
+    
+class categoria_jose(models.Model):
+    _name = 'rest_jose.categoria_jose'
+    _description = 'Modelo de Categorías para Gestión de Restaurante'
+
+    name = fields.Char(
+        string="Nombre", 
+        required=True, 
+        help="Nombre de la Categoría"
+    )
+
+    descripcion = fields.Text(
+        string="Descripción", 
+        required=False, 
+        help="Descripción de la Categoría"
+    )
+
+    platos_ids = fields.One2many(
+        'rest_jose.platos_jose', 
+        'categoria_id', 
+        string='Platos de esta categoría')
+
+    ingredientes_comunes = fields.Many2many(
+        comodel_name='rest_jose.ingrediente_jose',
+        string='Ingredientes comunes',
+        compute='_compute_ingredientes_comunes',
+        help='Ingredientes usados por cualquier plato de esta categoría'
+    )
+
+    @api.depends('platos_ids', 'platos_ids.rel_ingredientes')
+    def _compute_ingredientes_comunes(self):
+        Ingrediente = self.env['rest_jose.ingrediente_jose']
+        for categoria in self:
+            acumulado = Ingrediente
+            for plato in categoria.platos_ids:
+                acumulado = acumulado + plato.rel_ingredientes
+            categoria.ingredientes_comunes = acumulado
+    
+class chef_jose(models.Model):
+    _name = 'rest_jose.chef_jose'
+    _description = 'Modelo de Chefs para Gestión de Restaurante'
+
+    name = fields.Char(
+        string="Nombre", 
+        required=True, 
+        help="Nombre del Chef"
+    )
+
+    especialidad_id = fields.Many2one(
+        comodel_name='rest_jose.categoria_jose',
+        string='Categoría',
+        help='Tipo de platos en los que es experto el chef'
+    )
+
+    platos_asignados = fields.One2many(
+        'rest_jose.platos_jose', 
+        'chef_especializado', 
+        string='Platos asignados al chef')
+
