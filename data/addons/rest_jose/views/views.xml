@@ -14,6 +14,7 @@
             <field name="disponible"/>
             <field name="codigo_plato"/>
             <field name="tiempo_preparacion"/>
+            <field name="fecha_alta"/>
             <field name="precio_con_iva"/>
             <field name="precio_final"/>
         </list>
@@ -38,6 +39,7 @@
                     <field name="precio_con_iva"/>
                     <field name="precio_final"/>
                     <field name="tiempo_preparacion"/>
+                    <field name="fecha_alta"/>
                     <field name="menus" widget="many2many_tags"/>
                     <field name="disponible"/>
                     <field name="rel_ingredientes" widget="many2many_tags"/>
@@ -75,7 +77,9 @@
                   <group string="Información del menú">
                     <field name="name"/>
                     <field name="descripcion"/>
+                    <field name="creado_por"/>
                     <field name="fecha_inicio"/>
+                    <field name="dias_disponible"/>
                     <field name="fecha_fin"/>
                     <field name="activo"/>
                     <field name="categorias_platos" widget="many2many_tags"/>

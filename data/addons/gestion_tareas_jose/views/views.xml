@@ -10,6 +10,7 @@
           <field name="name"/>
           <field name="descripcion"/>
           <field name="proyecto_ids"/>
+          <field name="proyecto_default"/>
           <field name="finalizado"/>
         </list>
       </field>
@@ -31,6 +32,7 @@
                     <field name="proyecto_ids"/>
                 </group>
                 <group>
+                    <field name="responsable"/>
                     <field name="fecha_creacion"/>
                     <field name="fecha_ini"/>
                     <field name="fecha_fin"/>

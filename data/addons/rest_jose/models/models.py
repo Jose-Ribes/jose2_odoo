@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError, UserError
+from datetime import timedelta
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -40,13 +41,31 @@ class platos_jose(models.Model):
 
     precio = fields.Float(
         string="Precio del Plato", 
-        required=True, 
+        required=True,
+        default=5.0, 
         help="Precio total de plato")
     
     descuento = fields.Float(
         string="Descuento (%)",
         default=0.0,
         help="Porcentaje de descuento aplicado al plato")
+    
+    fecha_alta = fields.Date(
+        string="",
+        default=lambda self: fields.Date.today(),
+        help="Fecha de Alta de los platos"
+    )
+
+    tiempo_preparacion = fields.Integer(
+        string="Tiempo Preparación", 
+        required=False, 
+        help="Tiempo de preparación del plato en minutos")
+    
+    disponible = fields.Boolean(
+        string="Disponible", 
+        default=True,
+        required=False, 
+        help="Disponibilidad del plato")
     
     # CAMPOS COMPUTADOS **********************************************
     # *****************************************************************
@@ -67,20 +86,17 @@ class platos_jose(models.Model):
         store=True,
         help="Precio final con descuento aplicado")
     
-    tiempo_preparacion = fields.Integer(
-        string="Tiempo Preparación", 
-        required=False, 
-        help="Tiempo de preparación del plato en minutos")
+    def _get_categoria_defecto(self):
+        return self.env['rest_jose.categoria_jose'].search(
+            [('name', '=', 'Sin Clasificar')],
+            limit=1
+        )
     
-    disponible = fields.Boolean(
-        string="Disponible", 
-        default=True,
-        required=False, 
-        help="Disponibilidad del plato")
-    
+
     categoria_id = fields.Many2one(
         comodel_name='rest_jose.categoria_jose',
         string='Categoría',
+        default=_get_categoria_defecto,
         help='Categoría a la que pertenece el plato'
     )
 
@@ -177,9 +193,9 @@ class platos_jose(models.Model):
     @api.constrains('precio')
     def _verificar_precio(self):
         for plato in self:
-            if plato.precio < 0:
-                _logger.error(f"Precio inválido para plato {plato.id}: {plato.precio} (menor que 0)")
-                raise ValidationError(f"El precio {plato.precio} no puede ser menor que 0")
+            if plato.precio < 5.0:
+                _logger.error(f"Precio inválido para plato {plato.id}: {plato.precio} (menor que 5.0)")
+                raise ValidationError(f"El precio {plato.precio} no puede ser menor que 5.0")
             else:
                 _logger.info(f"Precio validado correctamente para plato {plato.id}: {plato.precio}")
 
@@ -220,14 +236,30 @@ class menu_jose(models.Model):
 
     fecha_fin = fields.Date(
         string="Fecha Fin", 
-        required=False, 
-        help="Fecha Fin del Menu"
+        compute="_compute_fecha_fin",
+        store=True,
+        help="Fecha Fin del Menu (calculada automáticamente)"
     )
 
     activo = fields.Boolean(
         string="Activo", 
-        required=False, 
+        required=False,
+        default=False, 
         help="Comprobación de actividad del Menu"
+    )
+
+    dias_disponible = fields.Integer(
+        string="Días Disponible",
+        default=7,
+        help="Número de días que el menú estará disponible (por defecto una semana)"
+    )
+
+    creado_por = fields.Many2one(
+        'res.users',
+        string='Creado_Por',
+        default=lambda self: self.env.user,
+        readonly=True,
+        help='Usuario autor de el Menu'
     )
 
     # RELACIONES ****************************************************
@@ -256,6 +288,14 @@ class menu_jose(models.Model):
         compute="_compute_precio_total",
         store=True,
         help="Suma total de los precios finales de todos los platos")
+
+    @api.depends('fecha_inicio', 'dias_disponible')
+    def _compute_fecha_fin(self):
+        for menu in self:
+            if menu.fecha_inicio and menu.dias_disponible:
+                menu.fecha_fin = menu.fecha_inicio + timedelta(days=menu.dias_disponible)
+            else:
+                menu.fecha_fin = menu.fecha_inicio
 
     @api.depends('platos', 'platos.categoria_id')
     def _compute_categorias_platos(self):

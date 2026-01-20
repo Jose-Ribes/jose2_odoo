@@ -21,9 +21,14 @@ class tareas_jose(models.Model):
         string="Descripción", 
         help="Breve descripción de la tarea")
 
+    # FECHA CREACIÓN
+    #def _get_fecha_actual(self):
+        #return datetime.now()
+
     fecha_creacion = fields.Date(
         string="Fecha Creación", 
-        required=True, 
+        required=True,
+        default=lambda self: datetime.now(),
         help="Fecha en la que se dio de alta la tarea")
 
     fecha_ini = fields.Datetime(
@@ -37,15 +42,9 @@ class tareas_jose(models.Model):
 
     finalizado = fields.Boolean(
         string="Finalizado", 
-        help="Indica si la tarea ha sido finalizada o no")
+        help="Indica si la tarea ha sido finalizada o no")  
     
-    sprint = fields.Many2one(
-        'gestion_tareas_jose.sprints_jose', 
-        string='Sprint Activo', 
-        compute='_compute_sprint', 
-        store=True)  
-    
-    # En el modelo tareas_sergio
+    # En el modelo tareas_jose
     codigo = fields.Char(
         compute="_get_codigo",
         store=True)
@@ -68,6 +67,28 @@ class tareas_jose(models.Model):
         string='Proyecto',
         related='historia.proyecto',
         readonly=True)
+    
+    # PROYECTO POR DEFECTO
+    def _get_proyecto_activo(self):
+        return self.env['gestion_tareas_jose.proyectos_jose'].search(
+            [('activo', '=', True)],
+            limit=1, order='create_date desc')
+    
+    proyecto_default = fields.Many2one(
+        'gestion_tareas_jose.proyectos_jose',
+        string='Proyecto Default',
+        default=_get_proyecto_activo)
+    
+    responsable = fields.Many2one(
+        'res.users',
+        string='Responsable',
+        default=lambda self: self.env.user.id)
+
+    sprint = fields.Many2one(
+        'gestion_tareas_jose.sprints_jose', 
+        string='Sprint Activo', 
+        compute='_compute_sprint', 
+        store=True)
     
     #MÉTODOS --------------------------------------------
     #----------------------------------------------------
@@ -134,8 +155,9 @@ class sprints_jose(models.Model):
         help="Fecha y hora de inicio de la tarea")
     
     duracion = fields.Integer(
-       string="Duración", 
-        help="Cantidad de días que tiene asignado el sprint")
+       string="Duración",
+       default=14, 
+       help="Cantidad de días que tiene asignado el sprint")
 
     fecha_fin = fields.Datetime(
         compute='_compute_fecha_fin',
@@ -217,6 +239,10 @@ class proyectos_jose(models.Model):
         'gestion_tareas_jose.historias_jose', 
         'proyecto', 
         string='Historias de usuario del proyecto')
+    
+    activo = fields.Boolean(
+        string= "Estado del proyecto",
+        default = True)
     
 class historias_jose(models.Model):
     _name = 'gestion_tareas_jose.historias_jose'
