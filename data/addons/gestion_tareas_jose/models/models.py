@@ -216,11 +216,18 @@ class tecnologias_jose(models.Model):
         help="Logo de la tecnología")
     
     rel_tareas = fields.Many2many(
-        comodel_name='gestion_tareas_jose.tareas_jose',
-        relation='relacion_tareas_tecnologias',
-        column1='rel_tecnologias',
-        column2='rel_tareas',
-        string='Tareas')
+        comodel_name='res.partner',
+        relation='relacion_tecnologias_partner',
+        column2='tecnologia_id',
+        column1='partner_id',
+        string='Desarrolladores')
+    
+    desarrolladores_ids = fields.Many2many(
+        comodel_name='res.partner',                             # Modelo destino
+        relation='rel_dev_tec',                                 # Tabla intermedia
+        column1='tecnologia_id',                                # Columna para tecnologías
+        column2='desarrollador_id',                             # Columna para esta clase
+        string="Tecnologías")
 
 class proyectos_jose(models.Model):
     _name = 'gestion_tareas_jose.proyectos_jose'
@@ -285,3 +292,17 @@ class historias_jose(models.Model):
 
                 # Asignar el resultado
                 historia.tecnologias = tecnologias_acumuladas
+
+class desarrolladores_jose(models.Model):
+    _inherit = 'res.partner'
+
+    es_desarrollador = fields.Boolean(
+        string="Es Desarrollador")
+
+    tecnologias_ids = fields.Many2many(
+       comodel_name ='gestion_tareas_jose.tecnologias_jose',
+       relation='rel_dev_tec',
+       column1='desarrollador_id',
+       column2="tecnologia_id",
+       string="Tecnologías"
+    )

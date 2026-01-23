@@ -69,6 +69,46 @@
       <field name="view_mode">list,form</field>
     </record>
 
+    <!-- VISTAS Desarrolladores-->
+    <record model="ir.ui.view" id="gestion_tareas_jose.view_partner_form_inherit">
+      <field name="name">desarrolladores form</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//sheet/notebook/page[@name='internal_notes']" position="after">
+            <page name="devs" string="Datos Desarrollador">
+                <group>
+                    <field name="es_desarrollador"/>
+                    <field name="tecnologias_ids" widget="many2many_tags"/>
+                </group>
+            </page>
+        </xpath>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="desarrolladores_action_window">
+      <field name="name">Desarrolladores</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">list,form</field>
+      <field name="domain">[('es_desarrollador', '=', True)]</field>
+      <field name="context">{'default_es_desarrollador': True}</field>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_view_desarrolladores_list">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">list</field>
+      <field name="view_id" ref="base.view_partner_tree"/>
+      <field name="act_window_id" ref="gestion_tareas_jose.desarrolladores_action_window"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_view_desarrolladores_form">
+    <field name="sequence" eval="2"></field>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="gestion_tareas_jose.view_partner_form_inherit"></field>
+    <field name="act_window_id" ref="gestion_tareas_jose.desarrolladores_action_window"></field>
+</record>
+
     <!-- server action to the one above -->
 <!--
     <record model="ir.actions.server" id="gestion_tareas_jose.action_server">
@@ -92,6 +132,7 @@
     <menuitem name="Sprints" id="gestion_tareas_jose.sprints" parent="gestion_tareas_jose.menu_root" sequence="40"/>
     <menuitem name="Proyectos" id="gestion_tareas_jose.proyectos" parent="gestion_tareas_jose.menu_root" sequence="10"/>
     <menuitem name="Historias" id="gestion_tareas_jose.historias" parent="gestion_tareas_jose.menu_root" sequence="20"/>
+    <menuitem name="Desarrolladores" id="gestion_tareas_jose.desarrolladores" action="desarrolladores_action_window" parent="gestion_tareas_jose.menu_root" sequence="50"/>
 <!--
     <menuitem name="Menu 2" id="gestion_tareas_jose.menu_2" parent="gestion_tareas_jose.menu_root"/>
 -->
@@ -104,6 +145,10 @@
               action="gestion_tareas_jose.action_proyectos_window"/>
     <menuitem name="Listado Historias" id="gestion_tareas_jose.historias_list" parent="gestion_tareas_jose.historias"
               action="gestion_tareas_jose.action_historias_window"/>
+<!--
+    <menuitem name="Listado Desarrolladores" id="gestion_tareas_jose.desarrolladores_list" parent="gestion_tareas_jose.desarrolladores"
+              action="gestion_tareas_jose.action_desarrolladores_window"/>
+-->
 <!--
     <menuitem name="Server to list" id="gestion_tareas_jose" parent="gestion_tareas_jose.menu_2"
               action="gestion_tareas_jose.action_server"/>
