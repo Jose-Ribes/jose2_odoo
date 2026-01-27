@@ -127,6 +127,60 @@
       <field name="view_mode">list,form</field>
     </record>
 
+    <!-- Extiende formulario de contactos para pestaña Camarero -->
+    <record model="ir.ui.view" id="rest_jose.view_partner_camareros_form">
+      <field name="name">res.partner.camareros.form</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+      <xpath expr="//field[@name='function']" position="after">
+            <field name="seccion"/>
+        </xpath>
+      <xpath expr="//field[@name='vat']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+
+        <xpath expr="//page[@name='contact_addresses']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//sheet/notebook" position="inside">
+          <page name="camarero"
+                string="Datos Camareros"
+                invisible="not es_camarero">
+            <group>
+              <field name="es_camarero" invisible="1"/>
+              <field name="turno"/>
+              <field name="menus_especialidad" widget="many2many_tags"/>
+            </group>
+          </page>
+        </xpath>
+      </field>
+    </record>
+
+    <!-- Acción y vistas para Camareros -->
+    <record model="ir.actions.act_window" id="rest_jose.action_camareros_window">
+      <field name="name">Camareros</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">list,form</field>
+      <field name="domain">[('es_camarero', '=', True)]</field>
+      <field name="context">{'default_es_camarero': True}</field>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="rest_jose.action_view_camareros_list">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">list</field>
+      <field name="view_id" ref="base.view_partner_tree"/>
+      <field name="act_window_id" ref="rest_jose.action_camareros_window"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="rest_jose.action_view_camareros_form">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="rest_jose.view_partner_camareros_form"/>
+      <field name="act_window_id" ref="rest_jose.action_camareros_window"/>
+    </record>
+
     <!-- server action to the one above -->
 <!--
     <record model="ir.actions.server" id="rest_jose.action_server">
@@ -159,5 +213,8 @@
           action="rest_jose.action_categorias_window"/>
     <menuitem name="Chefs" id="rest_jose.menu_chefs" parent="rest_jose.menu"
           action="rest_jose.action_chefs_window"/>
+        <menuitem name="Camareros" id="rest_jose.menu_camareros" parent="rest_jose.menu"
+          action="rest_jose.action_camareros_window"/>
+
   </data>
 </odoo>

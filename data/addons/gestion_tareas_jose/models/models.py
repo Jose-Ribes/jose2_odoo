@@ -67,6 +67,10 @@ class tareas_jose(models.Model):
         string='Proyecto',
         related='historia.proyecto',
         readonly=True)
+
+    desarrollador_ids = fields.Many2one(
+        'res.partner',
+        string='Desarrollador')
     
     # PROYECTO POR DEFECTO
     def _get_proyecto_activo(self):
@@ -306,3 +310,18 @@ class desarrolladores_jose(models.Model):
        column2="tecnologia_id",
        string="Tecnologías"
     )
+
+    @api.onchange('es_desarrollador')
+    def _onchange_es_desarrollador(self):
+        # Buscar la categoría "Desarrollador"
+        categorias = self.env['res.partner.category'].search([('name', '=', 'Desarrollador')])
+
+        if len(categorias) > 0:
+            # Si existe, usar la primera encontrada
+            category = categorias[0]
+        else:
+            # Si no existe, crearla
+            category = self.env['res.partner.category'].create({'name': 'Desarrollador'})
+
+        # Asignar la categoría al contacto
+        self.category_id = [(4, category.id)]

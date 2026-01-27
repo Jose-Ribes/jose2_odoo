@@ -420,4 +420,47 @@ class chef_jose(models.Model):
         'rest_jose.platos_jose', 
         'chef_especializado', 
         string='Platos asignados al chef')
+    
+class camareros_jose(models.Model):
+    _inherit = 'res.partner'
+
+    es_camarero = fields.Boolean(
+        string="Es Camarero",
+        help="Indica si el contacto es un camarero"
+    )
+
+    turno = fields.Selection(
+        selection=[('manana', 'Mañana'), ('tarde', 'Tarde'), ('noche', 'Noche')],
+        string="Turno",
+        help="Turno habitual de trabajo"
+    )
+
+    seccion = fields.Char(
+        string="Sección",
+        help="Zona asignada (terraza, sala, bar, etc.)"
+    )
+
+    menus_especialidad = fields.Many2many(
+        comodel_name='rest_jose.menu_jose',
+        relation='rel_camarero_menu',
+        column1='camarero_id',
+        column2='menu_id',
+        string='Menús de especialidad',
+        help='Menús en los que el camarero destaca'
+    )
+
+    @api.onchange('es_camarero')
+    def _onchange_es_camarero(self):
+        # Buscar la categoría "Camarero"
+        categorias = self.env['res.partner.category'].search([('name', '=', 'Camarero')])
+
+        if len(categorias) > 0:
+            # Si existe, usar la primera encontrada
+            category = categorias[0]
+        else:
+            # Si no existe, crearla
+            category = self.env['res.partner.category'].create({'name': 'Camarero'})
+
+        # Asignar la categoría al contacto
+        self.category_id = [(4, category.id)]
 

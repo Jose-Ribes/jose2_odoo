@@ -33,6 +33,12 @@
                 </group>
                 <group>
                     <field name="responsable"/>
+                    <field name="desarrollador_ids" 
+                            domain="[('es_desarrollador', '=', True)]"
+                            context="{
+                                        'form_view_ref': 'gestion_tareas_jose.view_partner_form_inherit',
+                                        'default_es_desarrollador': True
+                                    }"/>
                     <field name="fecha_creacion"/>
                     <field name="fecha_ini"/>
                     <field name="fecha_fin"/>
@@ -76,11 +82,22 @@
       <field name="inherit_id" ref="base.view_partner_form"/>
       <field name="mode">primary</field>
       <field name="arch" type="xml">
+         <xpath expr="//field[@name='website']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+
+        <xpath expr="//page[@name='sales_purchases']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
         <xpath expr="//sheet/notebook/page[@name='internal_notes']" position="after">
-            <page name="devs" string="Datos Desarrollador">
+            <page name="devs" 
+                    string="Datos Desarrollador"
+                    invisible="not es_desarrollador">
                 <group>
-                    <field name="es_desarrollador"/>
-                    <field name="tecnologias_ids" widget="many2many_tags"/>
+                    <group>
+                        <field name="es_desarrollador" readonly="true"/>
+                        <field name="tecnologias_ids" widget="many2many_tags"/>
+                    </group>
                 </group>
             </page>
         </xpath>
