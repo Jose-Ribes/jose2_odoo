@@ -5,18 +5,14 @@
       <field name="name">rest_jose list</field>
       <field name="model">rest_jose.platos_jose</field>
       <field name="arch" type="xml">
-        <list>
+        <list decoration-muted="disponible == False" decoration-success="descuento > 0" decoration-warning="es_caro == True">
             <field name="name"/>
             <field name="categoria_id"/>
-            <field name="chef_especializado"/>
-            <field name="especialidad_chef"/>
             <field name="precio"/>
+            <field name="precio_final" sum="Total ingresos"/>
             <field name="disponible"/>
-            <field name="codigo_plato"/>
-            <field name="tiempo_preparacion"/>
-            <field name="fecha_alta"/>
-            <field name="precio_con_iva"/>
-            <field name="precio_final"/>
+            <field name="descuento"/>
+            <field name="es_caro"/>
         </list>
       </field>
     </record>
@@ -54,14 +50,13 @@
         <field name="name">rest_jose menu list</field>
         <field name="model">rest_jose.menu_jose</field>
         <field name="arch" type="xml">
-          <list>
+          <list decoration-info="activo == True" decoration-muted="fecha_fin &lt; current_date" decoration-warning="proximo_vencimiento == True">
           <field name="name"/>
           <field name="fecha_inicio"/>
           <field name="fecha_fin"/>
           <field name="activo"/>
-          <field name="categorias_platos" widget="many2many_tags"/>
-          <field name="platos" widget="many2many_tags"/>
-          <field name="precio_total" readonly="1"/>
+          <field name="precio_total" sum="Total precio menús"/>
+          <field name="proximo_vencimiento" invisible="1"/>
           </list>
         </field>
       </record>
@@ -95,6 +90,19 @@
         </form>
         </field>
       </record>
+
+    <!-- vista de lista (ingredientes) -->
+    <record model="ir.ui.view" id="rest_jose.ingredientes_list_view">
+        <field name="name">rest_jose.ingrediente_jose.list</field>
+        <field name="model">rest_jose.ingrediente_jose</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="es_alergeno == True" editable="top">
+                <field name="name"/>
+                <field name="es_alergeno"/>
+                <field name="descripcion"/>
+            </list>
+        </field>
+    </record>
 
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="rest_jose.action_platos_window">

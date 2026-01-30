@@ -50,6 +50,41 @@
       </field>
     </record>
 
+    <record model="ir.ui.view" id="gestion_tareas_jose.sprints_list_view">
+    <field name="name">gestion_tareas_jose.sprints_jose.list</field>
+    <field name="model">gestion_tareas_jose.sprints_jose</field>
+    <field name="arch" type="xml">
+        <list decoration-info="activo == True" editable="bottom">
+            <field name="nombre"/>
+            <field name="descripcion"/>
+            <field name="duracion" sum="Total días"/>
+            <field name="fecha_ini"/>
+            <field name="fecha_fin"/>
+            <field name="activo" widget="boolean_toggle"/>
+        </list>
+    </field>
+</record>
+
+    <record model="ir.ui.view" id="gestion_tareas_jose.sprints_form_view">
+    <field name="name">gestion_tareas_jose.sprints_jose.form</field>
+    <field name="model">gestion_tareas_jose.sprints_jose</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="nombre"/>
+                    <field name="proyecto"/>
+                    <field name="descripcion"/>
+                    <field name="fecha_ini"/>
+                    <field name="duracion"/>
+                    <field name="fecha_fin" readonly="1"/>
+                    <field name="activo" readonly="1"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="gestion_tareas_jose.action_tareas_window">
       <field name="name">gestion_tareas_jose window</field>

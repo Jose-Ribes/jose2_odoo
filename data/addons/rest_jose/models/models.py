@@ -86,6 +86,11 @@ class platos_jose(models.Model):
         store=True,
         help="Precio final con descuento aplicado")
     
+    es_caro = fields.Boolean(
+        string="Es Caro",
+        compute="_compute_es_caro",
+        help="Indica si el plato cuesta más de 20€")
+    
     def _get_categoria_defecto(self):
         return self.env['rest_jose.categoria_jose'].search(
             [('name', '=', 'Sin Clasificar')],
@@ -186,6 +191,11 @@ class platos_jose(models.Model):
             precio_base = plato.precio or 0.0
             descuento_decimal = (plato.descuento or 0.0) / 100.0
             plato.precio_final = precio_base * (1 - descuento_decimal)
+    
+    @api.depends('precio')
+    def _compute_es_caro(self):
+        for plato in self:
+            plato.es_caro = plato.precio > 20.0
 
     # MÉTODOS @api.constrains (VALIDACIONES) **************************
     # ***************************************************************
@@ -288,6 +298,11 @@ class menu_jose(models.Model):
         compute="_compute_precio_total",
         store=True,
         help="Suma total de los precios finales de todos los platos")
+    
+    proximo_vencimiento = fields.Boolean(
+        string="Próximo a vencer",
+        compute="_compute_proximo_vencimiento",
+        help="Indica si el menú vence en menos de 3 días")
 
     @api.depends('fecha_inicio', 'dias_disponible')
     def _compute_fecha_fin(self):
@@ -309,6 +324,16 @@ class menu_jose(models.Model):
     def _compute_precio_total(self):
         for menu in self:
             menu.precio_total = sum(menu.platos.mapped('precio_final'))
+    
+    @api.depends('fecha_fin')
+    def _compute_proximo_vencimiento(self):
+        for menu in self:
+            if menu.fecha_fin:
+                hoy = fields.Date.today()
+                dias_restantes = (menu.fecha_fin - hoy).days
+                menu.proximo_vencimiento = 0 <= dias_restantes < 3
+            else:
+                menu.proximo_vencimiento = False
 
     # MÉTODOS @api.constrains (VALIDACIONES) **************************
     # ***************************************************************

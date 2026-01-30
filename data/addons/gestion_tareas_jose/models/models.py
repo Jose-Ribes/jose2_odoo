@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from datetime import datetime
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError, UserError
@@ -180,6 +180,12 @@ class sprints_jose(models.Model):
         ondelete='set null', 
         help='Proyecto al que pertenece la historia')
     
+    activo = fields.Boolean(
+        compute='_compute_activo',
+        string='En Curso',
+        help='Indica si el sprint está actualmente en curso'
+    )
+    
     @api.depends('fecha_ini', 'duracion')
     def _compute_fecha_fin(self):
         try:
@@ -199,6 +205,18 @@ class sprints_jose(models.Model):
                     raise ValidationError(
                         "La fecha de fin no puede ser anterior a la fecha de inicio."
                     )
+                
+    @api.depends('fecha_ini', 'fecha_fin')
+    def _compute_activo(self):
+        hoy = date.today()
+        for sprint in self:
+            if sprint.fecha_ini and sprint.fecha_fin:
+                # Sprint activo si hoy está entre fecha inicio y fin
+                fecha_ini_date = sprint.fecha_ini.date() if hasattr(sprint.fecha_ini, 'date') else sprint.fecha_ini
+                fecha_fin_date = sprint.fecha_fin.date() if hasattr(sprint.fecha_fin, 'date') else sprint.fecha_fin
+                sprint.activo = fecha_ini_date <= hoy <= fecha_fin_date
+            else:
+                sprint.activo = False
     
 class tecnologias_jose(models.Model):
     _name = 'gestion_tareas_jose.tecnologias_jose'
