@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dronify_jose_dronify_jose,dronify_jose.dronify_jose,model_dronify_jose_dronify_jose,base.group_user,1,1,1,1
+access_dronify_jose_drones_jose,dronify_jose.drones_jose,model_dronify_jose_drones_jose,base.group_user,1,1,1,1

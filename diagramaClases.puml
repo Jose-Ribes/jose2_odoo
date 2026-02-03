@@ -1,0 +1,50 @@
+@startuml
+
+
+class "res.partner (Contactos(Pilotos y Clientes))" as R {
+    es_cliente: Boolean
+    es_vip: Boolean
+    es_piloto: Boolean
+    licencia: char
+    dron_autorizado_ids: Many2many(dronify.dron)
+}
+
+class "dronify.dron (Drones)" as D {
+    name:char
+    capacidad_max: float
+    bateria: Integer
+    estado: Selection(disponible, vuelo, taller)
+    piloto_autorizado_ids: Many2many(res.partner)
+}
+
+class "dronify.paquete(Paqutes)" as P{
+    codigo: Char
+    name: Char
+    peso: Float
+    cliente_ìd: Many2one(res.partner)
+    vuelo_id: Many2one(dronify.vuelo)
+    dron_relacionado: Char
+
+}
+
+class "dronify.vuelo (Registro de Vuelos)" as V {
+    codigo: Char
+    name: Char
+    dron_id: Many2one(dronify.dron)
+    piloto_id: Many2one(res.partner)
+    paquetes_ids: One2many(dronify.paquete, vuelo_id)
+    prepadado: Boolean
+    realizado: Boolean
+    peso_total: Float
+    consumo_estimado: Float
+}
+
+' Relaciones
+V "*" -up- "1" D
+V "*" -left- "1" R
+V "1" -right- "*" P
+R "*" -down- "*" D
+P "*" -right- "1" R
+
+
+@enduml
