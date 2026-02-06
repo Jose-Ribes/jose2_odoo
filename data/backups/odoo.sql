@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict PBiOXtc2YGF3ugGqu9n2qDNBjdJyPYccLR6yTbGuJzO3779VU6b8styqYpUELbK
+\restrict 4notobRvI1j2ccHqAkcKSCX0o3bmZ9W3Gs91u0DRkCBOYQCU71eCgPaUih0H58f
 
 -- Dumped from database version 15.15 (Debian 15.15-1.pgdg13+1)
 -- Dumped by pg_dump version 15.15 (Debian 15.15-1.pgdg13+1)
@@ -25073,7 +25073,6 @@ COPY public.base_module_install_review (id, module_id, create_uid, write_uid, cr
 --
 
 COPY public.base_module_uninstall (id, create_uid, write_uid, show_all, create_date, write_date) FROM stdin;
-4	2	2	f	2026-02-06 10:49:47.992294	2026-02-06 10:49:47.992294
 \.
 
 
@@ -25082,7 +25081,6 @@ COPY public.base_module_uninstall (id, create_uid, write_uid, show_all, create_d
 --
 
 COPY public.base_module_uninstall_ir_module_module_rel (base_module_uninstall_id, ir_module_module_id) FROM stdin;
-4	672
 \.
 
 
@@ -25836,9 +25834,9 @@ COPY public.ir_cron (id, ir_actions_server_id, user_id, interval_number, priorit
 11	156	1	1	6	0	1	1	Users: Notify About Unregistered Users	days	t	2026-02-07 10:36:38	2026-02-06 10:45:35	\N	2026-01-23 10:36:38.54264	2026-01-23 10:36:38.54264
 2	36	1	1	8	0	1	1	Base: Portal Users Deletion	days	t	2026-02-07 10:24:58	2026-02-06 10:45:35	\N	2025-12-05 10:24:49.036322	2026-01-23 10:36:30.635668
 4	136	1	1	1000	0	1	1	Publisher: Update Notification	weeks	t	2026-02-13 10:36:37	2026-02-06 10:45:35	\N	2026-01-23 10:36:30.635668	2026-01-23 10:36:30.635668
-1	35	1	1	3	0	1	1	Base: Auto-vacuum internal data	days	t	2026-02-07 10:24:58	2026-02-06 10:45:34	\N	2025-12-05 10:24:49.036322	2026-01-23 10:36:30.635668
 8	140	1	1	5	0	1	1	Notification: Notify scheduled messages	hours	t	2026-02-06 12:36:37	2026-02-06 11:38:32	\N	2026-01-23 10:36:30.635668	2026-01-23 10:36:30.635668
 3	135	1	1	6	0	1	1	Mail: Email Queue Manager	hours	t	2026-02-06 12:36:37	2026-02-06 11:38:33	\N	2026-01-23 10:36:30.635668	2026-01-23 10:36:30.635668
+1	35	1	1	3	0	1	1	Base: Auto-vacuum internal data	days	t	2026-02-07 10:24:58	2026-02-06 11:50:33	\N	2025-12-05 10:24:49.036322	2026-01-23 10:36:30.635668
 6	138	1	5	5	0	1	1	Mail: Fetchmail Service	minutes	f	2026-01-23 10:36:37	\N	\N	2026-01-23 10:36:30.635668	2026-01-23 10:36:30.635668
 5	137	1	1	5	0	1	1	Notification: Delete Notifications older than 6 Months	months	t	2026-02-23 10:36:37	2026-01-23 10:36:53	\N	2026-01-23 10:36:30.635668	2026-01-23 10:36:30.635668
 7	139	1	1	5	0	1	1	Mail: Post scheduled messages	days	t	2026-02-07 10:36:37	2026-02-06 10:45:35	\N	2026-01-23 10:36:30.635668	2026-01-23 10:36:30.635668
@@ -25884,10 +25882,7 @@ COPY public.ir_cron_progress (id, cron_id, remaining, done, timed_out_counter, c
 253	1	0	70	0	1	1	\N	2026-02-03 09:14:21.584233	2026-02-03 09:14:22.739935
 236	1	0	70	0	1	1	\N	2026-02-03 08:11:35.177282	2026-02-03 08:11:36.883604
 254	1	0	70	0	1	1	\N	2026-02-03 09:15:28.741638	2026-02-03 09:15:29.818553
-210	1	0	70	0	1	1	\N	2026-01-30 11:12:05.859344	2026-01-30 11:12:06.948279
-211	1	0	70	0	1	1	\N	2026-01-30 11:15:06.031243	2026-01-30 11:15:07.108143
-212	1	0	70	0	1	1	\N	2026-01-30 11:16:13.068083	2026-01-30 11:16:13.9958
-209	1	0	70	0	1	1	\N	2026-01-30 11:07:47.694044	2026-01-30 11:07:48.777465
+280	1	0	70	0	1	1	\N	2026-02-06 11:50:33.184597	2026-02-06 11:50:34.393103
 213	1	0	70	0	1	1	\N	2026-02-02 09:33:09.759073	2026-02-02 09:33:11.163615
 214	7	0	0	0	1	1	\N	2026-02-02 09:33:10.670898	2026-02-02 09:33:10.689642
 215	8	0	0	0	1	1	\N	2026-02-02 09:33:10.707641	2026-02-02 09:33:10.722918
@@ -25929,7 +25924,6 @@ COPY public.ir_cron_progress (id, cron_id, remaining, done, timed_out_counter, c
 --
 
 COPY public.ir_cron_trigger (id, cron_id, create_uid, write_uid, call_at, create_date, write_date) FROM stdin;
-143	1	1	1	2026-02-06 11:49:37.321116	2026-02-06 11:48:37.116132	2026-02-06 11:48:37.116132
 \.
 
 
@@ -45620,9 +45614,6 @@ COPY public.orm_signaling_groups (id, date) FROM stdin;
 --
 
 COPY public.orm_signaling_registry (id, date) FROM stdin;
-142	2026-01-30 11:06:36.897908
-143	2026-01-30 11:11:00.348764
-144	2026-01-30 11:12:40.266933
 145	2026-01-30 11:14:13.158826
 146	2026-02-03 07:58:19.433363
 147	2026-02-03 08:09:49.028924
@@ -48427,7 +48418,6 @@ COPY public.res_device_log (id, user_id, create_uid, write_uid, session_identifi
 12	2	\N	1	_609WKqlWYx2INgw9dJ8ffDbkjKlsmsym7qxieT9aC	windows	chrome	172.18.0.1	\N	\N	computer	t	2025-12-16 08:31:12	2025-12-19 10:41:46	\N	2026-01-07 20:37:47.633295
 197	2	\N	1	HRkeBu09-NPxvUM-f_Us1H_KEdHU_Fhg_xkpKWpPQH	windows	chrome	172.18.0.1	\N	\N	computer	t	2026-01-07 20:36:50	2026-01-20 07:10:45	\N	2026-01-27 07:21:38.793939
 201	2	\N	1	LTxQM_KnE6uH0N-9LNX5Yne68ixxljb7fVsdmKbu5k	windows	chrome	172.18.0.1	\N	\N	computer	t	2026-01-20 07:45:39	2026-01-23 10:19:51	\N	2026-01-30 10:25:28.328365
-211	2	\N	\N	6j81ArDc3Yyn9bqpvCVXtboDnjUTRnzBFi9nl343q_	windows	chrome	172.18.0.1	\N	\N	computer	f	2026-01-23 11:03:41	2026-02-06 09:04:27	\N	\N
 212	2	\N	\N	6j81ArDc3Yyn9bqpvCVXtboDnjUTRnzBFi9nl343q_	windows	chrome	172.18.0.1	\N	\N	computer	f	2026-01-23 11:03:41	2026-02-06 10:49:34	\N	\N
 \.
 
@@ -49504,7 +49494,7 @@ SELECT pg_catalog.setval('public.ir_cron_id_seq', 13, true);
 -- Name: ir_cron_progress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: odoo
 --
 
-SELECT pg_catalog.setval('public.ir_cron_progress_id_seq', 279, true);
+SELECT pg_catalog.setval('public.ir_cron_progress_id_seq', 280, true);
 
 
 --
@@ -60490,5 +60480,5 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict PBiOXtc2YGF3ugGqu9n2qDNBjdJyPYccLR6yTbGuJzO3779VU6b8styqYpUELbK
+\unrestrict 4notobRvI1j2ccHqAkcKSCX0o3bmZ9W3Gs91u0DRkCBOYQCU71eCgPaUih0H58f
 
