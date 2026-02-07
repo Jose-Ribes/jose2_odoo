@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 4F96OlkIjOdsoGUUDT18uw1dMn1suJfvabHOGFFUzNpLQx7N7radYA38lXfmEFU
+\restrict RIrtEy9BDhWZrrpAgN00yHwPuSvIpFyQy8FhRE6mFMcbHxpjdvl4Ik10zO1gYZR
 
 -- Dumped from database version 15.15 (Debian 15.15-1.pgdg13+1)
 -- Dumped by pg_dump version 15.15 (Debian 15.15-1.pgdg13+1)
@@ -25162,6 +25162,8 @@ COPY public.bus_bus (id, create_uid, write_uid, channel, message, create_date, w
 48	2	2	["odoo","res.partner",3,"presence"]	{"type":"bus.bus/im_status_updated","payload":{"presence_status":"offline","im_status":"offline","guest_id":false,"partner_id":3}}	2026-02-07 11:59:26.178318	2026-02-07 11:59:26.178318
 49	2	2	["odoo","res.partner",3,"presence"]	{"type":"bus.bus/im_status_updated","payload":{"presence_status":"online","im_status":"online","guest_id":false,"partner_id":3}}	2026-02-07 11:59:27.521907	2026-02-07 11:59:27.521907
 50	2	2	["odoo","res.partner",3,"presence"]	{"type":"bus.bus/im_status_updated","payload":{"presence_status":"offline","im_status":"offline","guest_id":false,"partner_id":3}}	2026-02-07 12:10:25.133644	2026-02-07 12:10:25.133644
+51	2	2	["odoo","res.partner",3,"presence"]	{"type":"bus.bus/im_status_updated","payload":{"presence_status":"online","im_status":"online","guest_id":false,"partner_id":3}}	2026-02-07 12:10:33.959132	2026-02-07 12:10:33.959132
+52	2	2	["odoo","res.partner",3,"presence"]	{"type":"bus.bus/im_status_updated","payload":{"presence_status":"offline","im_status":"offline","guest_id":false,"partner_id":3}}	2026-02-07 12:24:12.352676	2026-02-07 12:24:12.352676
 \.
 
 
@@ -45401,7 +45403,7 @@ COPY public.mail_notification (id, author_id, mail_message_id, mail_mail_id, res
 --
 
 COPY public.mail_presence (id, user_id, guest_id, status, last_poll, last_presence) FROM stdin;
-1	2	\N	offline	2026-02-07 11:59:27	2026-02-07 11:59:25.521
+1	2	\N	offline	2026-02-07 12:10:33	2026-02-07 12:04:48.551
 \.
 
 
@@ -48525,6 +48527,7 @@ COPY public.res_device_log (id, user_id, create_uid, write_uid, session_identifi
 201	2	\N	1	LTxQM_KnE6uH0N-9LNX5Yne68ixxljb7fVsdmKbu5k	windows	chrome	172.18.0.1	\N	\N	computer	t	2026-01-20 07:45:39	2026-01-23 10:19:51	\N	2026-01-30 10:25:28.328365
 212	2	\N	\N	6j81ArDc3Yyn9bqpvCVXtboDnjUTRnzBFi9nl343q_	windows	chrome	172.18.0.1	\N	\N	computer	f	2026-01-23 11:03:41	2026-02-06 10:49:34	\N	\N
 214	2	\N	\N	lwyGY7DBTpQvB7SLwgm7ASRxWfL7PL_gwU2Gd6GZvD	windows	chrome	172.18.0.1	\N	\N	computer	f	2026-02-07 09:48:32	2026-02-07 11:03:38	\N	\N
+215	2	\N	\N	lwyGY7DBTpQvB7SLwgm7ASRxWfL7PL_gwU2Gd6GZvD	windows	chrome	172.18.0.1	\N	\N	computer	f	2026-02-07 09:48:32	2026-02-07 12:10:33	\N	\N
 \.
 
 
@@ -49362,7 +49365,7 @@ SELECT pg_catalog.setval('public.base_partner_merge_line_id_seq', 1, false);
 -- Name: bus_bus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: odoo
 --
 
-SELECT pg_catalog.setval('public.bus_bus_id_seq', 50, true);
+SELECT pg_catalog.setval('public.bus_bus_id_seq', 52, true);
 
 
 --
@@ -50223,7 +50226,7 @@ SELECT pg_catalog.setval('public.res_currency_rate_id_seq', 1, false);
 -- Name: res_device_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: odoo
 --
 
-SELECT pg_catalog.setval('public.res_device_log_id_seq', 214, true);
+SELECT pg_catalog.setval('public.res_device_log_id_seq', 215, true);
 
 
 --
@@ -60586,5 +60589,5 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 4F96OlkIjOdsoGUUDT18uw1dMn1suJfvabHOGFFUzNpLQx7N7radYA38lXfmEFU
+\unrestrict RIrtEy9BDhWZrrpAgN00yHwPuSvIpFyQy8FhRE6mFMcbHxpjdvl4Ik10zO1gYZR
 
