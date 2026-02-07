@@ -3,36 +3,49 @@
 
     <!-- Vista de lista para drones -->
     <record model="ir.ui.view" id="dronify_jose.drones_list">
-      <field name="name">dronify_jose.drones_jose.tree</field>
+      <field name="name">dronify_jose.drones_jose.list</field>
       <field name="model">dronify_jose.drones_jose</field>
       <field name="arch" type="xml">
-        <list>
+          <list decoration-danger="bateria &lt; 25">
           <field name="name"/>
           <field name="capacidad_max"/>
-          <field name="bateria"/>
-          <field name="estado"/>
+            <field name="bateria" widget="progressbar"/>
+            <field name="estado" widget="badge" decoration-success="estado == 'disponible'" decoration-warning="estado == 'vuelo'" decoration-danger="estado == 'taller'"/>
         </list>
       </field>
     </record>
 
-    <!-- Vista de formulario para drones -->
-    <record model="ir.ui.view" id="dronify_jose.drones_form">
-      <field name="name">dronify_jose.drones_jose.form</field>
-      <field name="model">dronify_jose.drones_jose</field>
+    <!-- Vista de lista para vuelos -->
+    <record model="ir.ui.view" id="dronify_jose.vuelos_list">
+      <field name="name">dronify_jose.vuelos_jose.list</field>
+      <field name="model">dronify_jose.vuelos_jose</field>
       <field name="arch" type="xml">
-        <form>
-          <sheet>
-            <group>
-              <group>
-                <field name="name"/>
-                <field name="capacidad_max"/>
-                <field name="bateria"/>
-                <field name="estado"/>
-                <field name="piloto_autorizado_ids" widget="many2many_tags"/>
-              </group>
-            </group>
-          </sheet>
-        </form>
+        <list>
+          <field name="codigo"/>
+          <field name="name"/>
+          <field name="dron_id"/>
+          <field name="piloto_id"/>
+          <field name="peso_total"/>
+          <field name="consumo_estimado" widget="percentage"/>
+          <field name="preparado" widget="boolean_toggle" class="text-center"/>
+          <field name="realizado" widget="boolean_toggle" class="text-center"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- Vista de lista para paquetes -->
+    <record model="ir.ui.view" id="dronify_jose.paquetes_list">
+      <field name="name">dronify_jose.paquetes_jose.list</field>
+      <field name="model">dronify_jose.paquetes_jose</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="codigo"/>
+          <field name="name"/>
+          <field name="peso"/>
+          <field name="cliente_id"/>
+          <field name="vuelo_id"/>
+          <field name="dron_relacionado"/>
+        </list>
       </field>
     </record>
 
@@ -40,7 +53,21 @@
     <record model="ir.actions.act_window" id="dronify_jose.action_drones_window">
       <field name="name">Gestión de Drones</field>
       <field name="res_model">dronify_jose.drones_jose</field>
-      <field name="view_mode">list,form</field>
+      <field name="view_mode">list</field>
+    </record>
+
+    <!-- Acción para vuelos -->
+    <record model="ir.actions.act_window" id="dronify_jose.action_vuelos_window">
+      <field name="name">Gestión de Vuelos</field>
+      <field name="res_model">dronify_jose.vuelos_jose</field>
+      <field name="view_mode">list</field>
+    </record>
+
+    <!-- Acción para paquetes -->
+    <record model="ir.actions.act_window" id="dronify_jose.action_paquetes_window">
+      <field name="name">Gestión de Paquetes</field>
+      <field name="res_model">dronify_jose.paquetes_jose</field>
+      <field name="view_mode">list</field>
     </record>
 
     <!-- Menú principal -->
@@ -49,5 +76,9 @@
     <!-- Submenús -->  
     <menuitem name="Drones" id="dronify_jose.menu_drones" parent="menu_root"
               action="dronify_jose.action_drones_window"/>
+    <menuitem name="Vuelos" id="dronify_jose.menu_vuelos" parent="menu_root"
+              action="dronify_jose.action_vuelos_window"/>
+    <menuitem name="Paquetes" id="dronify_jose.menu_paquetes" parent="menu_root"
+              action="dronify_jose.action_paquetes_window"/>
   </data>
 </odoo>

@@ -22,11 +22,11 @@ class contactos_jose(models.Model):
     _inherit = 'res.partner'
 
     es_cliente = fields.Boolean(
-        string="Identifica si el contacto es cliente"
+        string="Es cliente"
     )
 
     es_vip = fields.Boolean(
-        string="Marca clientes premium" #Recordar repasar el modo ahorro de vuelos
+        string="Es vip" #Recordar repasar el modo ahorro de vuelos
     )
 
     es_piloto = fields.Boolean(
@@ -161,11 +161,11 @@ class vuelos_jose(models.Model):
         string='Paquetes a transportar')
     
     preparado = fields.Boolean(
-        string="Indica si el vuelo está listo para ejecutarse"
+        string="Preparado"
     )
 
     realizado = fields.Boolean(
-        string="Indica si el vuelo se ha completado"
+        string="Realizado"
     )
 
     peso_total = fields.Float(
