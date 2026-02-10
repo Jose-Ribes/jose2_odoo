@@ -86,27 +86,27 @@ class paquetes_jose(models.Model):
     _description = 'dronify_jose.paquetes_jose'
 
     codigo = fields.Char(
-        string="Codigo",
+        string="Código del Paquete",
         help="Identificador único",
         readonly=True,
         default=lambda self: datetime.now().strftime("%Y%m%d%H%M%S")
         )
     
     name = fields.Char(
-        string="Nombre", 
+        string="Descripción", 
         help="Descripción del contenido",
         required=True
         )
     
     peso = fields.Float(
-        string="Peso",
+        string="Peso (kg)",
         required=True,
         help="Peso en kilogramos"
     )
 
     cliente_id = fields.Many2one(
         'res.partner',
-        string='Cliente que envía el paquete',
+        string='Cliente',
         required=True,
         domain=[('es_cliente', '=', True)]
     )
@@ -119,7 +119,7 @@ class paquetes_jose(models.Model):
 
     dron_relacionado = fields.Char(
         related='vuelo_id.dron_id.name',
-        string="Nombre del dron del vuelo",
+        string="Dron de Reparto",
         readonly=True,
         store=True
     )

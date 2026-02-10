@@ -1,6 +1,45 @@
 <odoo>
   <data>
 
+    <!-- Vista de formulario para Pilotos -->
+    <record model="ir.ui.view" id="dronify_jose.pilotos_form">
+      <field name="name">dronify_jose.pilotos_jose.form</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='website']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//field[@name='function']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
+        <xpath expr="//page[@name='sales_purchases']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//page[@name='internal_notes']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//page[@name='contact_addresses']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//sheet" position="inside">
+          <group string="ROLES EN DRONIFY">
+            <group>
+              <field name="es_piloto" readonly="1"/>
+              <field name="licencia"/>
+              <field name="dron_autorizado_ids" widget="many2many_tags"/>
+            </group>
+            <group>
+            <field name="es_cliente"/>
+            <field name="es_vip"/>
+            </group>
+          </group>
+        </xpath>
+      </field>
+    </record>
+
     <!-- Vista de lista para drones -->
     <record model="ir.ui.view" id="dronify_jose.drones_list">
       <field name="name">dronify_jose.drones_jose.list</field>
@@ -12,6 +51,29 @@
             <field name="bateria" widget="progressbar"/>
             <field name="estado" widget="badge" decoration-success="estado == 'disponible'" decoration-warning="estado == 'vuelo'" decoration-danger="estado == 'taller'"/>
         </list>
+      </field>
+    </record>
+
+    <!-- Vista de formulario para drones -->
+    <record model="ir.ui.view" id="dronify_jose.drones_form">
+      <field name="name">dronify_jose.drones_jose.form</field>
+      <field name="model">dronify_jose.drones_jose</field>
+      <field name="arch" type="xml">
+          <form>
+            <sheet>
+              <group>
+                <group>
+                  <field name="name"/>
+                  <field name="bateria"/>
+                  </group>
+                <group>
+                  <field name="capacidad_max"/>
+                  <field name="estado"/>
+                </group>
+                  <field name="piloto_autorizado_ids"/>
+              </group>
+            </sheet>
+          </form>
       </field>
     </record>
 
@@ -33,6 +95,49 @@
       </field>
     </record>
 
+    <!-- Vista de formulario para vuelos -->
+    <record model="ir.ui.view" id="dronify_jose.vuelos_form">
+      <field name="name">dronify_jose.vuelos_jose.form</field>
+      <field name="model">dronify_jose.vuelos_jose</field>
+      <field name="arch" type="xml">
+        <form>
+            <sheet>
+              <group>
+                <group string="PLANIFICACIÓN">
+                  <field name="name"/>
+                  <field name="dron_id"/>
+                  <field name="piloto_id"/>
+                </group>
+                <group string="ESTADO Y CONTROL">
+                  <field name="preparado" readonly="1"/>
+                  <field name="realizado" readonly="1"/>
+                </group>
+              </group>
+              <notebook>
+                <page name="Paquetes">
+                  <field name="paquetes_ids" readonly="preparado">
+                    <form>
+                      <group>
+                        <field name="codigo"/>
+                        <field name="name"/>
+                        <field name="peso"/>
+                        <field name="cliente_id"/>
+                        <field name="vuelo_id"/>
+                        <field name="dron_relacionado"/>
+                      </group>
+                    </form>
+                  </field>
+                  <group class="oe_subtotal_footer oe_right">
+                    <field name="peso_total" readonly="1"/>
+                    <field name="consumo_estimado" widget="percentage" readonly="1"/>
+                  </group>
+                </page>
+              </notebook>
+            </sheet>
+          </form>
+      </field>
+    </record>
+
     <!-- Vista de lista para paquetes -->
     <record model="ir.ui.view" id="dronify_jose.paquetes_list">
       <field name="name">dronify_jose.paquetes_jose.list</field>
@@ -49,18 +154,32 @@
       </field>
     </record>
 
+    <!-- Acción para contactos -->
+    <record model="ir.actions.act_window" id="dronify_jose.action_pilotos_window">
+      <field name="name">Gestión de Pilotos</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_view_pilotos_form">
+    <field name="sequence" eval="2"></field>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="dronify_jose.pilotos_form"></field>
+    <field name="act_window_id" ref="dronify_jose.action_pilotos_window"></field>
+    </record>
+
     <!-- Acción para drones -->
     <record model="ir.actions.act_window" id="dronify_jose.action_drones_window">
       <field name="name">Gestión de Drones</field>
       <field name="res_model">dronify_jose.drones_jose</field>
-      <field name="view_mode">list</field>
+      <field name="view_mode">list,form</field>
     </record>
 
     <!-- Acción para vuelos -->
     <record model="ir.actions.act_window" id="dronify_jose.action_vuelos_window">
       <field name="name">Gestión de Vuelos</field>
       <field name="res_model">dronify_jose.vuelos_jose</field>
-      <field name="view_mode">list</field>
+      <field name="view_mode">list,form</field>
     </record>
 
     <!-- Acción para paquetes -->
@@ -73,7 +192,9 @@
     <!-- Menú principal -->
     <menuitem name="Dronify Jose" id="dronify_jose.menu_root"/>
     
-    <!-- Submenús -->  
+    <!-- Submenús -->
+    <menuitem name="Pilotos" id="dronify_jose.menu_pilotos" parent="menu_root"
+              action="dronify_jose.action_pilotos_window"/>  
     <menuitem name="Drones" id="dronify_jose.menu_drones" parent="menu_root"
               action="dronify_jose.action_drones_window"/>
     <menuitem name="Vuelos" id="dronify_jose.menu_vuelos" parent="menu_root"

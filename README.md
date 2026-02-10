@@ -9,3 +9,5 @@ Día 03-02-2026: He creado el módulo dronify_jose, dentro de este he creado dos
 Día 06-02-2026: He acabado la lógica de los modelos a falta de revisarlos para que me funcione además de insertar todos los modelos en el fichero de seguridad, en la siguiente sesión tengo que empezar a implementar las vistar e ir probando, además de cambiar algo del models.py si estuviera mal, me ha actualizado el módulo correctamente en el odoo.
 
 Día 07-02-2026: He cambiado el models.py a falta de alguna cosa que tengo que modificar está prácticamente acabado, en las vistas tengo realizadas las vistas de drones y paquetes y la vista de lista de vuelos me falta hacer la vista de formulario de los vuelos y la vista completa de los contactos que tengo que preguntar varias cosas en clase.
+
+Día 10-02-2026: He cambiado los errore que tenía en la vista tengo terminadas prácticamente la de paquetes, vuelos falta modificar alguna cosa, drones esta acabada y he empezado la de contactos empezando por la de pilotos y tengo casi acabada esta me faltaría acabar esta y empezar la de clientes.
