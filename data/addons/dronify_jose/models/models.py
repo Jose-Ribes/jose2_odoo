@@ -32,7 +32,7 @@ class contactos_jose(models.Model):
     )
 
     es_vip = fields.Boolean(
-        string="Es vip" #Recordar repasar el modo ahorro de vuelos
+        string="Es vip"
     )
 
     es_piloto = fields.Boolean(
@@ -41,8 +41,7 @@ class contactos_jose(models.Model):
 
     licencia = fields.Char(
         string="Licencia", 
-        required=True, #Recordar cambiar que sea obligatorio solo para pilotos
-        #El campo licencia debe ser obligatorio únicamente cuando es_piloto=True
+        required=True,
         help="Número de licencia del piloto")
     
     dron_autorizado_ids = fields.Many2many(
@@ -137,7 +136,6 @@ class paquetes_jose(models.Model):
         related='vuelo_id.dron_id.name',
         string="Dron de Reparto",
         readonly=True,
-        store=True
     )
 
 # VUELOS *******************************************************
